@@ -58,6 +58,66 @@ app.use(devMiddleware)
 // compilation error display
 app.use(hotMiddleware)
 
+
+var apiServer = express();
+//初始化一个新的名字为apiServer 的Express应用程序,如果直接使用23行的app，可以直接在此端口绑定api请求。
+var bodyParser = require('body-parser');
+// app.use(bodyParser.urlencoded({
+//   extended: true
+// }))
+apiServer.use(bodyParser.urlencoded({
+  extended: true
+}))
+// app.use(bodyParser.json());
+apiServer.use(bodyParser.json());
+var apiRouter = express.Router();
+var fs = require('fs');
+apiRouter.route('/:apiName')
+.all(function (req,res) {
+  fs.readFile('./db.json','utf8',function (err,data) {
+    if (err) throw err;
+    var data = JSON.parse(data)
+    if (data[req.params.apiName]){
+      res.json(data[req.params.apiName])
+    } else {
+      res.send('no such api name');
+    }
+  })
+})
+/*
+*
+* */
+/*
+后台ajax数据传输的写法二:
+ 在原app = express() 的基础上，
+ 初始化路由中间件apiRputes，
+使用require()来加载外部数据。
+去处数据中的分类属性list
+设置get请求api、 /getList并返回数据和状态值erron。
+var apiRputes = express.Router();
+ var appData = require('../db.json');
+ var list = appData.getNewsList;
+
+ apiRputes.get('/getList',function (req,res,next) {
+   res.json({
+      erron: 0,
+      data: list
+    })
+ })
+ app Express应用程序加载路由apiRputes并且分配一个中间键。
+ app.use('/api', apiRputes);
+  */
+
+apiServer.use('/api', apiRouter);
+
+apiServer.listen(port + 1,function (err) {
+  if (err){
+    console.log(err);
+    return;
+  }
+  console.log('Listening at http://localhost:' + (port + 1) + '\n')
+})
+//把apiServer绑定到8081端口，并在/config/index.js里的proxyTable设置api请求代理。
 // serve pure static assets
 var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
 app.use(staticPath, express.static('./static'))

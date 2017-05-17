@@ -27,7 +27,10 @@ module.exports = {
     autoOpenBrowser: true,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      '/api/': 'http://localhost:8081'
+    },
+    //让8081端口代理api服务，需要绑定端口。如果有请求向8080请求api就会被转接到8081端口
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README
     // (https://github.com/webpack/css-loader#sourcemaps)
