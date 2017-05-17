@@ -70,6 +70,7 @@ export default {
       this.isShowRegDialog = true
     },
     closeDialog (attr) {
+      console.log(this[attr]);
       this[attr] = false
     },
     onSuccessLog (data) {
